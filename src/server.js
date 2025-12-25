@@ -111,8 +111,25 @@ function generateContextAwareResponse(query) {
   
   // Culture queries
   if (lowerQuery.includes('culture') || lowerQuery.includes('festival') || lowerQuery.includes('custom') ||
-      lowerQuery.includes('tradition') || lowerQuery.includes('celebration') || lowerQuery.includes('chai')) {
+      lowerQuery.includes('tradition') || lowerQuery.includes('celebration') || lowerQuery.includes('chai') ||
+      lowerQuery.includes('diwali') || lowerQuery.includes('holi') || lowerQuery.includes('eid') ||
+      lowerQuery.includes('vendor') || lowerQuery.includes('people')) {
     return generateCultureResponse(query);
+  }
+  
+  // Event queries
+  if (lowerQuery.includes('weekend') || lowerQuery.includes('event') || lowerQuery.includes('movie') ||
+      lowerQuery.includes('cinema') || lowerQuery.includes('park') || lowerQuery.includes('garden') ||
+      lowerQuery.includes('happening') || lowerQuery.includes('entertainment')) {
+    return generateEventResponse(query);
+  }
+  
+  // Tips queries
+  if (lowerQuery.includes('visit') || lowerQuery.includes('tourist') || lowerQuery.includes('weather') ||
+      lowerQuery.includes('season') || lowerQuery.includes('safety') || lowerQuery.includes('budget') ||
+      lowerQuery.includes('cost') || lowerQuery.includes('tip') || lowerQuery.includes('advice') ||
+      lowerQuery.includes('first time')) {
+    return generateTipsResponse(query);
   }
   
   return generateDefaultResponse(query);
@@ -243,10 +260,62 @@ function generateCultureResponse(query) {
 }
 
 /**
+ * Generate event/festival responses
+ */
+function generateEventResponse(query) {
+  const lowerQuery = query.toLowerCase();
+
+  if (lowerQuery.includes('weekend') || lowerQuery.includes('weekend plan')) {
+    return "Weekend ka plan? NCR mein bahut options hain! Markets ja sakte ho - Karol Bagh, Lajpat Nagar, Kamla Nagar mein shopping aur street food. Movies dekh sakte ho PVR, INOX ya Cinepolis mein. Parks ja sakte ho - Lodhi Gardens, Buddha Garden, Nehru Park. Cafe culture enjoy karo - The Big Chill, Chai Point, Starbucks. Food streets ja sakte ho Raj Nagar ya Chandni Chowk mein. Tum kya karna chahte ho, main suggest kar deta hoon specific places!";
+  }
+
+  if (lowerQuery.includes('event') || lowerQuery.includes('happening')) {
+    return "NCR mein events ka season! Festivals ke time to bahut kuch hota hai. Normal time mein concerts, exhibitions, food festivals. India Habitat Centre (IHC) mein cultural events hote rahte hain. Local clubs mein music nights, art exhibitions. Weekends mein farmers markets, flea markets. Kya type ka event pasand hai - music, food, art, ya cultural?";
+  }
+
+  if (lowerQuery.includes('movie') || lowerQuery.includes('cinema')) {
+    return "Movies dekhne ka plan? NCR mein bahut options! PVR cinemas almost har jagah - Select Citywalk, Pacific Mall, Ansal Plaza. INOX bhi good hai. Cinepolis mein luxury experience. Tickets 150-400 rupees ke beech. New releases ke liye morning shows best hain, kam crowd. Food court mein bhi khana mil jaata hai. Kaunsi movie dekhni hai?";
+  }
+
+  if (lowerQuery.includes('park') || lowerQuery.includes('garden')) {
+    return "Parks NCR mein relaxation ke liye best! Lodhi Gardens (Delhi) mein walking, historical monuments. Buddha Garden (Delhi) morning walks ke liye. Nehru Park (Delhi) boating aur picnic. Central Park (Noida) family time ke liye. Coronation Park (Delhi) quiet spot. Weekends mein bahut crowded hote hain, morning time best hai!";
+  }
+
+  // Default event response
+  return "NCR mein entertainment options bahut hain! Movies, parks, markets, cafes, events - sab kuch mil jaata hai. Weekend plan banana hai ya specific event ka idea chahiye? Batao, main help karunga!";
+}
+
+/**
+ * Generate general tips and advice responses
+ */
+function generateTipsResponse(query) {
+  const lowerQuery = query.toLowerCase();
+
+  if (lowerQuery.includes('visit') || lowerQuery.includes('tourist') || lowerQuery.includes('first time')) {
+    return "NCR mein first time aa rahe ho? Bahut accha! 😊 Pehle Metro sikho - Delhi ka lifeline hai, cheap aur fast. Street food try karo but clean places se - Raj Nagar, Chandni Chowk. Chai har jagah milti hai, free mein baatein ho jaati hain. Bargaining normal hai markets mein. Traffic avoid karo peak hours mein. Local cabs lo, drivers helpful hote hain. Hindi thodi sikho, log khush ho jaate hain. Aur haan, 'kaise ho?' se start karo conversations. Enjoy karo, NCR amazing hai!";
+  }
+
+  if (lowerQuery.includes('weather') || lowerQuery.includes('season')) {
+    return "NCR ka weather unpredictable hai! Summer (April-June) mein bahut garmi - 40-45°C, AC essential. Monsoon (July-September) mein barsaat, traffic kharab. Winter (November-February) pleasant - 5-20°C, fog morning mein. Spring/Autumn best time - festivals aur outdoor activities ke liye. Weather app check karo daily, sudden changes hote rahte hain!";
+  }
+
+  if (lowerQuery.includes('safety') || lowerQuery.includes('safe')) {
+    return "NCR mein safety ke liye basic tips: Night mein alone matt niklo, specially ladies. Trusted cabs use karo - Uber/Ola. Street food clean places se khao. Markets mein bargaining karo but arguments matt karo. Emergency ke liye 100 call karo. General sense use karo, NCR mostly safe hai but precautions zaroori hain. Local areas mein log helpful hote hain!";
+  }
+
+  if (lowerQuery.includes('budget') || lowerQuery.includes('cost') || lowerQuery.includes('expensive')) {
+    return "NCR mein budget ke options bahut! Street food ₹20-100, local dhabas ₹100-200, restaurants ₹200-500. Metro ₹10-50 per trip, auto ₹20-100, cabs ₹50-200. Markets mein bargaining se 30-50% save ho jaata hai. Budget hotels ₹500-2000, hostels ₹300-800. Plan karo according to your budget, sab kuch mil jaata hai!";
+  }
+
+  // Default tips response
+  return "NCR mein navigate karne ke liye tips? Metro learn karo, traffic avoid karo, local food try karo, bargaining sikho! Kya specific tip chahiye - travel, food, safety, ya budget?";
+}
+
+/**
  * Generate default response for general queries
  */
 function generateDefaultResponse(query) {
-  return "Bhai, yeh query to NCR-specific nahi lagraha! 🤔 Mujhe slang, khana, traffic, aur local culture ke baare mein poocho. Main sirf NCR jaanta hoon! 😄 Kya poocho: Ghaziabad, Noida, Delhi NCR ke baare mein? Ask about jugaad, momos, chaat, traffic, culture, festivals!";
+  return "Bhai, yeh query to NCR-specific nahi lagraha! 🤔 Mujhe slang, khana, traffic, culture, events, aur local tips ke baare mein poocho. Main sirf NCR ka expert hoon! 😄 Kya poocho: Ghaziabad, Noida, Delhi NCR ke baare mein? Ask about jugaad, momos, chaat, traffic, festivals, weekend plans, ya safety tips!";
 }
 
 /**
