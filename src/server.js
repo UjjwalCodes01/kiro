@@ -104,24 +104,10 @@ function generateContextAwareResponse(query) {
   
   // Traffic queries
   if (lowerQuery.includes('traffic') || lowerQuery.includes('noida') || lowerQuery.includes('ghaziabad') ||
-      lowerQuery.includes('time') || lowerQuery.includes('commute') || lowerQuery.includes('nh-24') ||
-      lowerQuery.includes('travel') || lowerQuery.includes('hours')) {
+      lowerQuery.includes('commute') || lowerQuery.includes('nh-24') ||
+      lowerQuery.includes('travel') || lowerQuery.includes('hours') ||
+      (lowerQuery.includes('time') && (lowerQuery.includes('take') || lowerQuery.includes('long') || lowerQuery.includes('duration')))) {
     return generateTrafficResponse(query);
-  }
-  
-  // Culture queries
-  if (lowerQuery.includes('culture') || lowerQuery.includes('festival') || lowerQuery.includes('custom') ||
-      lowerQuery.includes('tradition') || lowerQuery.includes('celebration') || lowerQuery.includes('chai') ||
-      lowerQuery.includes('diwali') || lowerQuery.includes('holi') || lowerQuery.includes('eid') ||
-      lowerQuery.includes('vendor') || lowerQuery.includes('people')) {
-    return generateCultureResponse(query);
-  }
-  
-  // Event queries
-  if (lowerQuery.includes('weekend') || lowerQuery.includes('event') || lowerQuery.includes('movie') ||
-      lowerQuery.includes('cinema') || lowerQuery.includes('park') || lowerQuery.includes('garden') ||
-      lowerQuery.includes('happening') || lowerQuery.includes('entertainment')) {
-    return generateEventResponse(query);
   }
   
   // Tips queries
