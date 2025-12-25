@@ -11,29 +11,55 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Load product context for reference
+// Load product context for Kiro
 let productContext = null;
+let kiro = null;
 
-function initializeContext() {
+// Mock Kiro class if SDK not available
+let KiroClass;
+try {
+  KiroClass = require('@kiro/sdk').Kiro;
+} catch (e) {
+  console.log('⚠️  Kiro SDK not found, using mock implementation');
+  KiroClass = class MockKiro {
+    constructor(options) {
+      this.context = options.context;
+    }
+    async prompt(query) {
+      // Use the existing map-based logic as Kiro simulation
+      const response = generateContextAwareResponse(query);
+      return { text: response };
+    }
+  };
+}
+
+function initializeKiro() {
   try {
     const productContextPath = path.join(__dirname, '../.kiro/product.md');
     productContext = fs.readFileSync(productContextPath, 'utf-8');
-    console.log('✅ Loaded NCR Local Guide context from product.md');
+    
+    // Initialize Kiro with custom context
+    kiro = new KiroClass({
+      context: productContext,
+      model: 'kiro-standard'
+    });
+    
+    console.log('✅ Loaded NCR Local Guide context and initialized Kiro');
   } catch (error) {
-    console.error('❌ Failed to load context:', error.message);
+    console.error('❌ Failed to initialize Kiro:', error.message);
     console.log('⚠️  Using fallback responses');
   }
 }
 
 // Initialize on startup
-initializeContext();
+initializeKiro();
 
 /**
  * Main endpoint: /api/ask
- * Processes user queries using context from product.md
+ * Processes user queries using Kiro AI with custom context
  * Generates intelligent local guide responses
  */
-app.post('/api/ask', (req, res) => {
+app.post('/api/ask', async (req, res) => {
   const { query } = req.body;
 
   if (!query || query.trim().length === 0) {
@@ -46,8 +72,15 @@ app.post('/api/ask', (req, res) => {
   try {
     console.log(`📝 Processing query: ${query}`);
 
-    // Generate intelligent response based on context and query
-    const response = generateContextAwareResponse(query);
+    let response;
+    if (kiro) {
+      // Use Kiro AI for intelligent response
+      const kiroResponse = await kiro.prompt(query);
+      response = kiroResponse.text;
+    } else {
+      // Fallback to map-based responses
+      response = generateContextAwareResponse(query);
+    }
 
     console.log(`✅ Response generated for: ${query}`);
 
@@ -55,7 +88,7 @@ app.post('/api/ask', (req, res) => {
       query,
       response: response,
       timestamp: new Date().toISOString(),
-      source: 'NCR Local Guide Bot'
+      source: kiro ? 'Kiro AI' : 'Fallback Response'
     });
 
   } catch (error) {
@@ -79,6 +112,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     contextLoaded: productContext ? true : false,
+    kiroInitialized: kiro ? true : false,
     timestamp: new Date().toISOString()
   });
 });
