@@ -110,6 +110,21 @@ function generateContextAwareResponse(query) {
     return generateTrafficResponse(query);
   }
   
+  // Culture queries
+  if (lowerQuery.includes('culture') || lowerQuery.includes('festival') || lowerQuery.includes('custom') ||
+      lowerQuery.includes('tradition') || lowerQuery.includes('celebration') || lowerQuery.includes('chai') ||
+      lowerQuery.includes('diwali') || lowerQuery.includes('holi') || lowerQuery.includes('eid') ||
+      lowerQuery.includes('vendor') || lowerQuery.includes('people')) {
+    return generateCultureResponse(query);
+  }
+  
+  // Event queries
+  if (lowerQuery.includes('weekend') || lowerQuery.includes('event') || lowerQuery.includes('movie') ||
+      lowerQuery.includes('cinema') || lowerQuery.includes('park') || lowerQuery.includes('garden') ||
+      lowerQuery.includes('happening') || lowerQuery.includes('entertainment')) {
+    return generateEventResponse(query);
+  }
+  
   // Tips queries
   if (lowerQuery.includes('visit') || lowerQuery.includes('tourist') || lowerQuery.includes('weather') ||
       lowerQuery.includes('season') || lowerQuery.includes('safety') || lowerQuery.includes('budget') ||
@@ -117,8 +132,6 @@ function generateContextAwareResponse(query) {
       lowerQuery.includes('first time')) {
     return generateTipsResponse(query);
   }
-  
-  return generateDefaultResponse(query);
 }
 
 /**
