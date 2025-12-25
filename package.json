@@ -1,14 +1,17 @@
 {
-  "name": "kiro",
-  "version": "0.1.0",
-  "private": true,
+  "name": "ncr-local-guide-bot",
+  "version": "1.0.0",
+  "description": "NCR Local Guide Bot - Powered by Kiro AI",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
     "build": "next build",
-    "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3"

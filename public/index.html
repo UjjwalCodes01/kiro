@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCR Local Guide Bot - Powered by Kiro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .suggestions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .suggestions p {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .suggestion-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pill {
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #333;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+
+        .pill:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .response-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            display: none;
+        }
+
+        .response-section.active {
+            display: block;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .response-header h3 {
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .kiro-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .response-box {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 1.6;
+            color: #444;
+            font-size: 1.05em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .metadata {
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #999;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-left: 4px solid #c33;
+            padding: 15px;
+            border-radius: 8px;
+            color: #c33;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+            }
+
+            .suggestion-pills {
+                flex-direction: column;
+            }
+
+            .pill {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ NCR Local Guide Bot</h1>
+            <p>Your friendly neighborhood guide to Delhi NCR</p>
+            <span class="badge">Powered by Kiro AI 🚀</span>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                💡 Ask about NCR slang, street food, traffic, local culture, and more!
+            </div>
+
+            <div class="input-group">
+                <label for="query">What would you like to know?</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="query" 
+                        placeholder="e.g., 'Best momos in Raj Nagar?', 'What is jugaad?', 'Traffic Ghaziabad to Noida?'"
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button class="btn" onclick="askKiro()" id="askBtn">Ask Kiro</button>
+                </div>
+            </div>
+
+            <div class="suggestions">
+                <p>Try these queries:</p>
+                <div class="suggestion-pills">
+                    <span class="pill" onclick="querySuggestion('Bhaiya, best momos kaha milenge Raj Nagar mein?')">🥟 Best Momos</span>
+                    <span class="pill" onclick="querySuggestion('Scene kya hai, explain jugaad')">🧠 Explain Jugaad</span>
+                    <span class="pill" onclick="querySuggestion('Ghaziabad se Noida kitna time lagega?')">🚗 Traffic Update</span>
+                    <span class="pill" onclick="querySuggestion('Buraapur ke paas chaat kaha milta hai?')">🍛 Chaat Spots</span>
+                </div>
+            </div>
+
+            <div class="response-section" id="responseSection">
+                <div class="response-header">
+                    <h3>Kiro's Response</h3>
+                    <span class="kiro-badge">KIRO AI</span>
+                </div>
+                <div class="response-box" id="responseBox"></div>
+                <div class="metadata" id="metadata"></div>
+            </div>
+
+            <div id="errorContainer"></div>
+            <div id="loadingContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        async function askKiro() {
+            const query = document.getElementById('query').value.trim();
+            
+            if (!query) {
+                showError('Please enter a query!');
+                return;
+            }
+
+            showLoading();
+            hideError();
+
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResponse(data);
+                document.getElementById('query').value = ''; // Clear input
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to get response. Please try again.');
+            }
+        }
+
+        function displayResponse(data) {
+            hideLoading();
+
+            const responseSection = document.getElementById('responseSection');
+            const responseBox = document.getElementById('responseBox');
+            const metadata = document.getElementById('metadata');
+
+            responseBox.textContent = data.response;
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            metadata.innerHTML = `
+                <span>⏱️ ${timeStr}</span>
+                <span>🤖 Source: ${data.source}</span>
+            `;
+
+            responseSection.classList.add('active');
+        }
+
+        function showLoading() {
+            const loadingContainer = document.getElementById('loadingContainer');
+            loadingContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Kiro is thinking... 🤔</p>
+                </div>
+            `;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').innerHTML = '';
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `<div class="error-message">❌ ${message}</div>`;
+        }
+
+        function hideError() {
+            document.getElementById('errorContainer').innerHTML = '';
+        }
+
+        function querySuggestion(query) {
+            document.getElementById('query').value = query;
+            askKiro();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                askKiro();
+            }
+        }
+
+        // Set focus on input when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('query').focus();
+        });
+    </script>
+</body>
+</html>
