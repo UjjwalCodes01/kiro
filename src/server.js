@@ -235,6 +235,18 @@ function generateCultureResponse(query) {
   const lowerQuery = query.toLowerCase();
 
   // Specific responses based on keywords
+  if (lowerQuery.includes('diwali')) {
+    return "Diwali NCR mein bahut badiya celebrate hoti hai, bhai! 🪔 Puri Delhi NCR light up ho jaati hai - diyas, candles, fairy lights sab jagmagate hain! Fireworks evening ko, patakhe bajate hain. Sweets banate hain - laddoos, barfis, jalebis. Family time, rangoli banate hain, puja karte hain. Lekin traffic bahut kharab ho jaata hai, aur pollution badh jaati hai. Best time hai morning ya afternoon mein bahar niklna.";
+  }
+
+  if (lowerQuery.includes('holi')) {
+    return "Holi NCR mein rang ka festival hai! 🎨 March mein celebrate hota hai. Pichkariyan, gulal, pani ke khel - sab kuch! Street celebrations hote hain, dhol nagade bajate hain. Gujiya aur malpua khate hain. Bahut masti hoti hai, lekin careful raho - kuch log neeche ka rang bhi laga dete hain! 😄 Traditional Holi best hai old city areas mein.";
+  }
+
+  if (lowerQuery.includes('eid')) {
+    return "Eid NCR mein bahut khushi se celebrate hota hai! 🕌 Biryani banati hai, sheer khurma, sewaiyan. New clothes pehente hain, masjid jaate hain for prayers. Family gatherings, mithaiyan distribute karte hain. Muslim community ke liye bahut special festival hai. Chand raat ko moon dekhte hain, agar clear ho to!";
+  }
+
   if (lowerQuery.includes('culture') || lowerQuery.includes('people')) {
     return "NCR ka culture? Bhai, yahan ke log bahut friendly aur direct hote hain! 🤝 Chai (tea) ke saath sab kuch theek ho jaata hai - business, friendship, sab! Street vendors par bahut belief hote hain people ko. Football (soccer) bahut popular hai, cricket to national obsession hai! Diwali, Holi, Eid - sab celebrate karte hain mil-baithkar!";
   }
