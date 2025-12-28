@@ -18,6 +18,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { GoogleGenAI } = require('@google/genai');
 
 class AIService {
   constructor() {
@@ -25,6 +26,12 @@ class AIService {
     this.steeringGuidelines = null;
     this.apiKey = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY || process.env.GEMINI_API_KEY;
     this.provider = process.env.AI_PROVIDER || 'openai'; // 'openai', 'anthropic', or 'gemini'
+    
+    // Initialize AI clients
+    if (this.provider === 'gemini' && this.apiKey) {
+      this.genAI = new GoogleGenAI({});
+      process.env.GEMINI_API_KEY = this.apiKey; // Set the environment variable for the SDK
+    }
     
     this.loadContext();
   }
@@ -131,58 +138,29 @@ class AIService {
   }
 
   /**
-   * Generate AI response using Google Gemini API
+   * Generate AI response using Google Gemini API (Official SDK)
    */
   async generateWithGemini(query) {
-    const systemPrompt = this.buildSystemPrompt();
-    
-    // Gemini uses a different URL structure with API key in URL
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`;
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `${systemPrompt}\n\nUser Query: ${query}`
-              }
-            ]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.8,
-          maxOutputTokens: 500,
-          topP: 0.95,
-          topK: 40
+    try {
+      const systemPrompt = this.buildSystemPrompt();
+      const response = await this.genAI.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `${systemPrompt}\n\nUser Query: ${query}`
+      });
+      
+      return {
+        text: response.text,
+        model: 'gemini-2.5-flash',
+        provider: 'Google Gemini',
+        usage: {
+          promptTokens: 0, // SDK doesn't provide detailed token counts
+          completionTokens: 0,
+          totalTokens: 0
         }
-      })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Gemini API error: ${response.statusText} - ${errorText}`);
+      };
+    } catch (error) {
+      throw new Error(`Gemini API error: ${error.message}`);
     }
-
-    const data = await response.json();
-    
-    // Gemini response structure is different
-    const text = data.candidates[0].content.parts[0].text;
-    
-    return {
-      text: text,
-      model: 'gemini-1.5-flash',
-      provider: 'Google Gemini',
-      usage: {
-        promptTokens: data.usageMetadata?.promptTokenCount || 0,
-        completionTokens: data.usageMetadata?.candidatesTokenCount || 0,
-        totalTokens: data.usageMetadata?.totalTokenCount || 0
-      }
-    };
   }
 
   /**

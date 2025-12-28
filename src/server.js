@@ -48,6 +48,8 @@
  * Time Saved: 85% (3 days vs. 2-3 weeks traditional approach)
  */
 
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
