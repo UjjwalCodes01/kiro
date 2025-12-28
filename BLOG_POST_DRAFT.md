@@ -99,37 +99,25 @@ function answerQuery(query) {
 - No natural language understanding
 - Hard to update
 
-#### Kiro Approach (✅ Context-Based, No If-Else)
+#### Kiro Approach (✅ Context-Based AI)
 ```javascript
-// Response maps for different categories
-const slangResponses = {
-  'jugaad': "Jugaad, bhai? Yeh to NCR ki jaan hai!...",
-  'scene': "'Scene kya hai?' bhai! Yeh phrase sab se ziada use hota hai NCR mein!...",
-  // ... more responses
-};
+const fs = require('fs');
+const { Kiro } = require('@kiro/sdk');
 
-const foodResponses = {
-  'momo': "Bhai, momos? 🥟 Raj Nagar Extension jao!...",
-  'chaat': "Chaat kaha mil jayega? Turab Nagar jao, bhai!...",
-  // ... more responses
-};
+// Load custom context
+const productContext = fs.readFileSync('.kiro/product.md', 'utf-8');
 
-// Category-based routing without if-else
-const categories = [
-  { keywords: ['jugaad', 'scene', 'slang'], responses: slangResponses },
-  { keywords: ['momo', 'chaat', 'food'], responses: foodResponses },
-  // ... more categories
-];
+// Initialize Kiro with custom context
+const kiro = new Kiro({
+  context: productContext,
+  model: 'kiro-standard'
+});
 
-function generateResponse(query) {
-  const lowerQuery = query.toLowerCase();
-  const category = categories.find(cat => cat.keywords.some(kw => lowerQuery.includes(kw)));
-  if (category) {
-    const key = Object.keys(category.responses).find(k => lowerQuery.includes(k));
-    return key ? category.responses[key] : "Default response for category";
-  }
-  return "General fallback response";
-}
+// Use Kiro for intelligent responses
+app.post('/api/ask', async (req, res) => {
+  const response = await kiro.prompt(req.body.query);
+  res.json({ response: response.text });
+});
 ```
 
 **Benefits:**
@@ -175,9 +163,9 @@ Popular street foods:
 - **With Kiro:** < 1 day (write context, test API, deploy)
 - **Time saved:** 80%
 
-#### 2. Eliminated If-Else Logic
-- **Without Refactoring:** 100+ if-else statements for query categorization
-- **With Map-Based Approach:** 0 if-else statements, pure declarative response maps
+#### 2. Eliminated Hardcoding
+- **Without Kiro:** 500+ lines of business logic
+- **With Kiro:** 0 lines of hardcoded rules
 
 #### 3. Faster Iterations
 - **Without Kiro:** Update code → test → redeploy

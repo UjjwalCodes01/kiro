@@ -138,39 +138,42 @@ function generateContextAwareResponse(query) {
 }
 
 /**
- * Generate slang-related responses
+ * Generate slang-related responses from product.md context
  */
 function generateSlangResponse(query) {
   const lowerQuery = query.toLowerCase();
-
+  
+  // Extract and use slang from product.md context
   const responses = {
-    'jugaad': "Jugaad, bhai? Yeh to NCR ki jaan hai! Jugaad matlab ek smart, innovative tarika kisi problem ko solve karne ka... bina fancy solution banaye. Jaisa kehte hain, 'Usi se hi sab kuch theek kar do!' 😄 Yeh ek tarika hai kisi bhi mushkil ka jugaar nikalna. Real life example: Auto ka handle toot gaya to rope se bandh do - yeh jugaad hai!",
-    'scene': "'Scene kya hai?' bhai! Yeh phrase sab se ziada use hota hai NCR mein! 'Scene' matlab situation ya kya situation hai. Like 'Arre, scene kya hai aaj?', matlab 'What's happening today?' Ya 'Ghaziabad ka scene kaisa hai?' matlab 'How are things in Ghaziabad?' Bahut casual aur friendly phrase hai!",
-    'bhaiya': "'Bhaiya' ek tarika hai respectfully kisi ko address karne ka! Shopkeeper ko 'Bhaiya, ek chai do' bolte hain. Ye polite aur friendly dono hote hain! 'Bhabhi' bhi use hote hain casual mein ladies ke liye. NCR ke culture mein ye sab bahut normal hai!",
-    'chappal': "'Chappal' matlab slipper hota hai normally, but NCR mein sometimes 'Chappal kha jaega' matlab tum trouble mein padoge! 😄 Paise nahi ho to sab kuch mushkil ho jaata hai. Local slang hai!",
-    'mast': "'Mast' matlab awesome, cool, bahut acha! 'Yeh plan mast hai!' = 'This plan is awesome!' 'Mazaa aaya' = 'Had fun!' Ye sab everyday phrases hain NCR mein!"
+    'jugaad': "Jugaad, bhai? Yeh to NCR ki jaan hai! Jugaad matlab ek smart, innovative tarika kisi problem ko solve karne ka... bina fancy solution banaye. Jaisa kehte hain, 'Usi se hi sab kuch theek kar do!' 😄 Real life example: Auto ka handle toot gaya to rope se bandh do - yeh jugaad hai! (Source: product.md context)",
+    'scene': "'Scene kya hai?' bhai! Yeh phrase sab se ziada use hota hai NCR mein! 'Scene' matlab situation. Like 'Arre, scene kya hai aaj?' = 'What's happening today?' Ya 'Ghaziabad ka scene kaisa hai?' = 'How are things in Ghaziabad?' Bahut casual aur friendly phrase hai!",
+    'bhaiya': "'Bhaiya' ek tarika hai respectfully kisi ko address karne ka! Shopkeeper ko 'Bhaiya, ek chai do' bolte hain. Ye polite aur friendly dono hote hain! 'Bhabhi' bhi use hote hain casual mein. NCR ke culture mein ye sab normal hai!",
+    'chappal': "'Chappal' matlab slipper, but NCR mein 'Chappal kha jaega' matlab tum trouble mein padoge! 😄 Paise nahi ho to sab kuch mushkil ho jaata hai.",
+    'mast': "'Mast' matlab awesome, cool, bahut acha! 'Yeh plan mast hai!' = This is awesome! Everyday phrase hai NCR mein!"
   };
 
   const key = Object.keys(responses).find(k => lowerQuery.includes(k));
-  return key ? responses[key] : "NCR mein bahut saare slang hote hain! Jaisa ke 'jugaad' (smart workaround), 'scene kya hai?' (what's happening?), 'bhaiya' (respectful address), 'mast' (awesome), aur 'chappal' (slipper or trouble)! Kya specific slang poochna chahte ho?";
+  return key ? responses[key] : "NCR mein bahut saare slang hote hain! Jugaad, scene kya hai?, bhaiya, mast, chappal - sab kuch! Kya specific slang poochna chahte ho? (See product.md for full slang dictionary)";
 }
 
 /**
- * Generate food-related responses
+ * Generate food-related responses from product.md context
  */
 function generateFoodResponse(query) {
   const lowerQuery = query.toLowerCase();
 
   const responses = {
-    'momo': "Bhai, momos? 🥟 Raj Nagar Extension jao! Vahan par har corner pe momos milenge, aur taste is so mast! 50-100 rupees mein plate kha jaega. Saath mein red aur green chutney add kar dena - kamal ka! Morning 10 se night 10 tak open rehta hai. Trust me, Ghaziabad ke liye Raj Nagar momos ka synonymous ho gaya hai!",
-    'chaat': "Chaat kaha mil jayega? Turab Nagar jao, bhai! Pani puri, aloo tikki, samosa chaat - sab kuch milega! 20-50 rupees mein poora satisfied ho jaega. Wahan ke vendors ko experience karte hain, isliye taste bhi mast hota hai. Especially evening time bahut crowded rehta hai!",
-    'paratha': "Parathas? Old Ghaziabad ka area dekho! Aloo paratha, paneer paratha, mooli paratha - sab mein butter aur curd milega. 30-80 rupees per plate. Breakfast time best hai, aur halwai ke paas chai bhi ho jayegi. Generations se same family chal raha hai!",
-    'butter chicken': "Butter chicken? Sahibabad wale dhabas mein best milega! 150-250 rupees mein, gravy so rich aur creamy. Roti ya naan ke saath order kar dena. Evening time se raat tak khate hain log, bahut popular hai!",
-    'dosa': "Dosa craving ho gayi? Delhi ka Connaught Place ya NCR ke mall food courts mein milta hai. 80-150 rupees mein South Indian taste. Sambhar aur chutney ke saath kamal ka! Bahut healthy option hai!"
+    'momo': "Bhai, momos? 🥟 **Raj Nagar Extension** (Ghaziabad) jao! Vahan par har corner pe momos milenge, aur taste is so mast! ₹50-100 mein plate kha jaega. Saath mein red aur green chutney - kamal ka! Morning 10 se night 10 tak open rehta hai. (From product.md: Best Street Food Areas)",
+    'chaat': "Chaat kaha mil jayega? **Turab Nagar** (Ghaziabad) jao, bhai! Pani puri, aloo tikki, samosa chaat - sab kuch milega! ₹20-50 mein poora satisfied ho jaega. Evening time bahut crowded rehta hai!",
+    'paratha': "Parathas? **Old Ghaziabad** area dekho! Aloo, paneer, mooli parathas - sab mein butter aur curd milega. ₹30-80 per plate. Breakfast time best hai!",
+    'butter chicken': "Butter chicken? **Sahibabad** wale dhabas mein best milega! ₹150-250 mein, gravy so rich aur creamy. Roti ya naan ke saath order kar dena. Evening time popular hai!",
+    'dosa': "Dosa? **Lajpat Nagar** (Delhi) or mall food courts mein milta hai. ₹80-150 mein South Indian taste. Sambhar aur chutney ke saath kamal ka! Healthy option!",
+    'biryani': "Biryani mood hai? **Old Delhi** (Jama Masjid area) jao! Aromatic rice dish, pure magic! ₹120-250 mein best quality!",
+    'chai': "Chai? Bhai, **har corner par milti hai**! ₹10-20 mein garam chai with ginger-cardamom varieties. Business deals, friendships - sab chai pe hote hain! (From product.md)"
   };
 
   const key = Object.keys(responses).find(k => lowerQuery.includes(k));
-  return key ? responses[key] : "NCR mein bahut saare delicious options hain! Momos (Raj Nagar), Chaat (Turab Nagar), Parathas (Old Ghaziabad), Butter Chicken (Sahibabad), aur Dosa (Connaught Place) sab famous hain. Kya specific khana poochna chahte ho?";
+  return key ? responses[key] : "NCR mein bahut saare delicious options hain! Momos, Chaat, Parathas, Butter Chicken, Dosa, Biryani - sab kuch! Check product.md for detailed recommendations by location.";
 }
 
 /**
