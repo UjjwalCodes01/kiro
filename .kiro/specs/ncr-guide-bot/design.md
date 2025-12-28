@@ -1,0 +1,328 @@
+# Design Document: NCR Local Guide Bot with Kiro Agentic AI
+
+## Overview
+
+This design demonstrates how to build a local guide bot using **Kiro's true agentic capabilities** - not just static context files, but real-time AI agent interactions that generate, refine, and improve code through spec-driven development.
+
+## The Kiro Agentic Difference
+
+### Traditional Approach (What We Had)
+```
+User Query → Static Template Matching → Hardcoded Response
+```
+
+### Kiro Agentic Approach (What We Need)
+```
+User Query → Kiro AI Agent → Dynamic Context Analysis → AI-Generated Response
+              ↑
+              |
+         product.md + steering files (as agent context)
+```
+
+## Architecture
+
+### Layer 1: Kiro IDE/CLI Environment
+- **Spec-driven development**: Requirements → Design → Tasks
+- **Agent chat**: Interactive code generation and refinement
+- **Context awareness**: Kiro agents understand project structure
+- **Iterative improvement**: Agents suggest and implement improvements
+
+### Layer 2: AI Agent Integration
+```typescript
+// Instead of template matching, use Kiro's agent API
+interface KiroAgentRequest {
+  query: string;
+  context: string;  // product.md content
+  steering: string; // behavior guidelines
+  conversationHistory?: Message[];
+}
+
+interface KiroAgentResponse {
+  response: string;
+  reasoning: string;
+  contextUsed: string[];
+  confidence: number;
+  source: 'Kiro AI Agent';
+}
+```
+
+### Layer 3: Application Layer
+- Express.js API that invokes Kiro agents
+- Frontend that displays AI-generated responses
+- Logging system that captures agent interactions
+
+## Components
+
+### 1. Kiro Agent Service
+
+**Purpose**: Interface with Kiro's AI agents for response generation
+
+**Implementation**:
+```javascript
+class KiroAgentService {
+  constructor() {
+    this.context = this.loadContext();
+    this.steering = this.loadSteering();
+  }
+
+  async generateResponse(query) {
+    // This is where Kiro's AI agent actually generates responses
+    // Not template matching - real AI generation
+    const agentResponse = await kiro.agent.chat({
+      message: query,
+      context: this.context,
+      steering: this.steering,
+      systemPrompt: 'You are a friendly NCR local guide...'
+    });
+
+    return {
+      response: agentResponse.text,
+      metadata: {
+        source: 'Kiro AI Agent',
+        contextUsed: agentResponse.contextReferences,
+        generatedAt: new Date().toISOString()
+      }
+    };
+  }
+}
+```
+
+### 2. Spec-Driven Development Workflow
+
+**How Kiro Agents Build This Project**:
+
+1. **Requirements Phase** (Kiro Agent helps):
+   - Developer: "Kiro, help me define requirements for an NCR guide bot"
+   - Kiro Agent: Generates requirements.md with user stories
+   - Developer: Reviews and refines with agent
+
+2. **Design Phase** (Kiro Agent helps):
+   - Developer: "Kiro, design the architecture for this bot"
+   - Kiro Agent: Generates design.md with components
+   - Developer: Iterates on design with agent feedback
+
+3. **Implementation Phase** (Kiro Agent helps):
+   - Developer: "Kiro, implement the API endpoint"
+   - Kiro Agent: Generates code with proper structure
+   - Developer: Tests and refines with agent
+
+4. **Documentation Phase** (Kiro Agent helps):
+   - Developer: "Kiro, write the blog post"
+   - Kiro Agent: Generates documentation
+   - Developer: Adds screenshots and publishes
+
+### 3. Evidence Collection System
+
+**Purpose**: Capture Kiro agent interactions for demonstration
+
+**What to Capture**:
+- Screenshots of Kiro chat generating code
+- Logs of agent suggestions and implementations
+- Before/after comparisons showing agent improvements
+- Video of spec-driven workflow in action
+
+**Implementation**:
+```javascript
+class KiroEvidenceLogger {
+  logAgentInteraction(interaction) {
+    // Log for blog post and submission
+    this.interactions.push({
+      timestamp: new Date(),
+      type: interaction.type, // 'code_generation', 'suggestion', 'refinement'
+      input: interaction.input,
+      output: interaction.output,
+      screenshot: interaction.screenshot
+    });
+  }
+
+  generateEvidenceReport() {
+    // Create markdown report for blog post
+    return this.interactions.map(i => 
+      `### ${i.type}\n**Input**: ${i.input}\n**Output**: ${i.output}`
+    ).join('\n\n');
+  }
+}
+```
+
+## Data Models
+
+### Agent Interaction Log
+```typescript
+interface AgentInteraction {
+  id: string;
+  timestamp: Date;
+  type: 'code_generation' | 'suggestion' | 'refinement' | 'documentation';
+  developerInput: string;
+  agentResponse: string;
+  codeGenerated?: string;
+  screenshot?: string;
+  outcome: 'accepted' | 'refined' | 'rejected';
+}
+```
+
+### AI Response Metadata
+```typescript
+interface AIResponseMetadata {
+  source: 'Kiro AI Agent';
+  model: string;
+  contextReferences: string[];
+  steeringApplied: string[];
+  generatedAt: Date;
+  confidence: number;
+  reasoning?: string;
+}
+```
+
+## Correctness Properties
+
+### Property 1: Authentic AI Generation
+*For any* user query, the response SHALL be generated by Kiro's AI agent, not template-matched from static responses.
+**Validates: Requirements 1.1, 1.5**
+
+### Property 2: Context-Aware Responses
+*For any* NCR-related query, the Kiro agent SHALL reference product.md context and generate responses that demonstrate understanding beyond exact matches.
+**Validates: Requirements 3.1, 3.4, 8.3**
+
+### Property 3: Spec-Driven Development
+*For any* feature implementation, the development SHALL follow the spec-driven workflow (requirements → design → tasks → implementation with Kiro agents).
+**Validates: Requirements 2.1, 2.2, 2.3**
+
+### Property 4: Evidence Capture
+*For any* Kiro agent interaction, the system SHALL log the interaction for demonstration purposes.
+**Validates: Requirements 4.1, 4.2, 4.3**
+
+### Property 5: Dynamic Response Generation
+*For any* query, the response SHALL be dynamically generated by the AI agent, with metadata proving it's not template-based.
+**Validates: Requirements 5.1, 5.2, 5.5**
+
+## Error Handling
+
+### Agent Unavailable
+- Fallback to informative error message
+- Log the failure for debugging
+- Suggest checking Kiro agent connection
+
+### Context Loading Failure
+- Verify product.md exists and is readable
+- Provide clear error message
+- Suggest context file fixes
+
+### Response Generation Timeout
+- Set reasonable timeout (5 seconds)
+- Return partial response if available
+- Log timeout for monitoring
+
+## Testing Strategy
+
+### Unit Tests
+- Test context loading
+- Test steering file parsing
+- Test API endpoint structure
+- Test error handling
+
+### Integration Tests
+- Test Kiro agent invocation
+- Test response generation flow
+- Test metadata capture
+- Test evidence logging
+
+### Demonstration Tests
+- Capture screenshots of Kiro chat
+- Record video of spec-driven workflow
+- Document agent interactions
+- Show before/after code generation
+
+## Implementation Notes
+
+### How to Actually Use Kiro Agents
+
+1. **Open Kiro IDE/CLI**:
+   ```bash
+   kiro chat
+   ```
+
+2. **Start Spec-Driven Development**:
+   ```
+   Developer: "I want to build an NCR local guide bot. Help me create requirements."
+   Kiro Agent: [Generates requirements.md]
+   Developer: "Now help me design the architecture."
+   Kiro Agent: [Generates design.md]
+   ```
+
+3. **Generate Code with Agents**:
+   ```
+   Developer: "Implement the API endpoint that uses your AI capabilities."
+   Kiro Agent: [Generates code with proper Kiro integration]
+   Developer: "Add error handling."
+   Kiro Agent: [Refines code with error handling]
+   ```
+
+4. **Capture Evidence**:
+   - Screenshot each interaction
+   - Save chat logs
+   - Record video of workflow
+   - Document in blog post
+
+### What Makes This "Kiro-Powered"
+
+**NOT Kiro-Powered** (What we had):
+- Static template matching
+- Hardcoded responses
+- No agent interaction
+- Just using product.md as a data file
+
+**IS Kiro-Powered** (What we need):
+- Real-time AI agent generation
+- Dynamic context analysis
+- Spec-driven development workflow
+- Evidence of agent interactions
+- Iterative refinement with agents
+- Screenshots/videos of Kiro IDE in action
+
+## Deployment Considerations
+
+### Development Environment
+- Use Kiro IDE/CLI for all development
+- Keep chat logs for documentation
+- Capture screenshots regularly
+- Record key interactions
+
+### Production Environment
+- Deploy with Kiro agent integration
+- Include agent metadata in responses
+- Log agent interactions
+- Monitor agent performance
+
+## Documentation Requirements
+
+### Blog Post Must Include:
+1. Screenshots of Kiro chat generating code
+2. Explanation of spec-driven workflow
+3. Before/after examples showing agent improvements
+4. Video demonstration (optional but recommended)
+5. Evidence that responses are AI-generated, not template-based
+
+### GitHub Repository Must Show:
+1. Spec files in .kiro/specs/
+2. Evidence of iterative development
+3. Comments showing Kiro agent contributions
+4. README explaining Kiro workflow
+
+## Success Criteria
+
+This design is successful when:
+- ✅ Responses are genuinely AI-generated by Kiro agents
+- ✅ Development workflow uses Kiro IDE/CLI
+- ✅ Blog post includes evidence of agent interactions
+- ✅ Evaluators can verify authentic Kiro usage
+- ✅ Project demonstrates spec-driven development
+- ✅ Screenshots/videos show Kiro agents in action
+
+## Next Steps
+
+1. Implement KiroAgentService with real agent integration
+2. Capture screenshots of Kiro chat during development
+3. Document each agent interaction
+4. Create video demonstration
+5. Update blog post with evidence
+6. Ensure submission shows authentic Kiro usage
