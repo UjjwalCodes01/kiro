@@ -210,6 +210,60 @@
             font-size: 1.05em;
         }
 
+        /* Structured Response Styles */
+        .cultural-header {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .original-phrase {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+
+        .section-header {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 5px;
+        }
+
+        .cultural-quote {
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #333;
+        }
+
+        .powered-by {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+            margin: 20px 0 10px 0;
+            font-size: 0.9em;
+        }
+
+        .source-link {
+            text-align: center;
+            color: #999;
+            font-size: 0.85em;
+            font-style: italic;
+        }
+
         .loading {
             text-align: center;
             padding: 20px;
@@ -374,7 +428,12 @@
             const responseBox = document.getElementById('responseBox');
             const metadata = document.getElementById('metadata');
 
-            responseBox.textContent = data.response;
+            // Check if response is structured (contains markdown headers)
+            if (data.response.includes('## 🟣 Cultural Interpretation')) {
+                responseBox.innerHTML = formatStructuredResponse(data.response);
+            } else {
+                responseBox.textContent = data.response;
+            }
 
             const now = new Date();
             const timeStr = now.toLocaleTimeString();
@@ -384,6 +443,24 @@
             `;
 
             responseSection.classList.add('active');
+        }
+
+        function formatStructuredResponse(responseText) {
+            // Convert markdown-style structured response to HTML
+            let html = responseText
+                .replace(/## 🟣 (.+)/g, '<h2 class="cultural-header">$1</h2>')
+                .replace(/\*\*Original Phrase:\*\* "(.+)"/g, '<div class="original-phrase"><strong>Original Phrase:</strong> "$1"</div>')
+                .replace(/### 💬 (.+)/g, '<h3 class="section-header">$1</h3>')
+                .replace(/### 🏷️ (.+)/g, '<h3 class="section-header">$1</h3>')
+                .replace(/### 📍 (.+)/g, '<h3 class="section-header">$1</h3>')
+                .replace(/### 🤝 (.+)/g, '<h3 class="section-header">$1</h3>')
+                .replace(/### ⚠️ (.+)/g, '<h3 class="section-header">$1</h3>')
+                .replace(/### 📖 (.+)/g, '<h3 class="section-header">$1</h3>')
+                .replace(/> (.+)/g, '<blockquote class="cultural-quote">$1</blockquote>')
+                .replace(/\*\*Powered by (.+)\*\*/g, '<div class="powered-by">$1</div>')
+                .replace(/_(.+)_/g, '<div class="source-link">$1</div>');
+
+            return html;
         }
 
         function showLoading() {

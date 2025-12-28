@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Interpretation - Kiro AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            background: url('image.png') center/cover no-repeat fixed;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-card {
+            text-align: center;
+            padding: 30px 40px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.1em;
+            font-weight: 400;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            color: white;
+            font-size: 0.95em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .phrase-input {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 1.1em;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .phrase-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .phrase-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px 32px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #D4A574 0%, #C89968 100%);
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(212, 165, 116, 0.4);
+            margin-top: 15px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(212, 165, 116, 0.5);
+            background: linear-gradient(135deg, #DDB584 0%, #D2A378 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .suggestions {
+            margin-top: 25px;
+        }
+
+        .suggestions-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: block;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .suggestion-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pill {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            color: white;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .pill:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .response-card {
+            display: none;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .response-card.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .response-title {
+            color: white;
+            font-size: 1.8em;
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .ai-badge {
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #D4A574 0%, #C89968 100%);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4);
+        }
+
+        .original-phrase-box {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .original-phrase-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .original-phrase-text {
+            color: white;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .info-box-header {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-box-content {
+            color: white;
+            font-size: 1em;
+            line-height: 1.6;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .explanation-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .explanation-header {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .explanation-text {
+            color: white;
+            font-size: 1.05em;
+            line-height: 1.8;
+            font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.1em;
+            font-weight: 500;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(239, 68, 68, 0.5);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            font-weight: 500;
+            margin-top: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .response-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="card header-card">
+            <h1>Cultural Interpretation</h1>
+            <p class="subtitle">Understand the deeper meaning behind local phrases</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="card">
+            <div class="input-section">
+                <label class="input-label">Enter a phrase to interpret:</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="phraseInput" 
+                        class="phrase-input" 
+                        placeholder="e.g., Chaliye ji, Jugaad, Dekhte hain..."
+                        onkeypress="handleKeyPress(event)"
+                    >
+                </div>
+                <button class="btn-primary" onclick="interpretPhrase()" id="interpretBtn">
+                    Interpret Meaning
+                </button>
+            </div>
+
+            <div class="suggestions">
+                <span class="suggestions-label">Try these examples:</span>
+                <div class="suggestion-pills">
+                    <span class="pill" onclick="useSuggestion('Abhi thoda kaam hai')">Abhi thoda kaam hai</span>
+                    <span class="pill" onclick="useSuggestion('Chaliye ji')">Chaliye ji</span>
+                    <span class="pill" onclick="useSuggestion('Dekhte hain')">Dekhte hain</span>
+                    <span class="pill" onclick="useSuggestion('Aap ka keeht hua')">Aap ka keeht hua</span>
+                </div>
+            </div>
+
+            <div id="loadingContainer"></div>
+            <div id="errorContainer"></div>
+        </div>
+
+        <!-- Response Section -->
+        <div class="card response-card" id="responseCard">
+            <div class="response-header">
+                <h2 class="response-title">Cultural Interpretation</h2>
+                <span class="ai-badge">AI POWERED</span>
+            </div>
+
+            <div class="original-phrase-box">
+                <div class="original-phrase-label">Original Phrase</div>
+                <div class="original-phrase-text" id="originalPhrase">"..."</div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-box-header">IMPLIED MEANING</div>
+                    <div class="info-box-content" id="impliedMeaning">...</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-box-header">TONE CATEGORY</div>
+                    <div class="info-box-content" id="toneCategory">...</div>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-box-header">USAGE CONTEXT</div>
+                    <div class="info-box-content" id="usageContext">...</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-box-header">SOCIAL APPROPRIATENESS</div>
+                    <div class="info-box-content" id="socialAppropriateness">...</div>
+                </div>
+            </div>
+
+            <div class="explanation-box">
+                <div class="explanation-header">RISKS / CULTURAL NOTES</div>
+                <div class="explanation-text" id="culturalNotes">...</div>
+            </div>
+
+            <div class="explanation-box">
+                <div class="explanation-header">CULTURAL EXPLANATION</div>
+                <div class="explanation-text" id="culturalExplanation">...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function interpretPhrase() {
+            const phrase = document.getElementById('phraseInput').value.trim();
+            
+            if (!phrase) {
+                showError('Please enter a phrase to interpret!');
+                return;
+            }
+
+            showLoading();
+            hideError();
+            hideResponse();
+
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: phrase })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Check if using fallback data
+                const isFallback = data.source?.includes('Fallback') || data.fallbackReason === 'API_LIMIT_EXCEEDED';
+                
+                displayResponse(phrase, data.response, isFallback, data.note);
+                document.getElementById('phraseInput').value = '';
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to get interpretation. Please try again.');
+            }
+        }
+
+        function displayResponse(phrase, responseText, isFallback = false, fallbackNote = '') {
+            hideLoading();
+
+            // Parse the structured response
+            const parsed = parseStructuredResponse(responseText);
+            
+            document.getElementById('originalPhrase').textContent = `"${phrase}"`;
+            document.getElementById('impliedMeaning').textContent = parsed.impliedMeaning || 'Not available';
+            document.getElementById('toneCategory').textContent = parsed.toneCategory || 'Not available';
+            document.getElementById('usageContext').textContent = parsed.usageContext || 'Not available';
+            document.getElementById('socialAppropriateness').textContent = parsed.socialAppropriateness || 'Not available';
+            document.getElementById('culturalNotes').textContent = parsed.culturalNotes || 'Not available';
+            document.getElementById('culturalExplanation').textContent = parsed.culturalExplanation || responseText;
+
+            // Update badge to show fallback status
+            const badge = document.querySelector('.ai-badge');
+            if (isFallback) {
+                badge.textContent = 'FALLBACK MODE';
+                badge.style.background = 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)';
+                badge.title = fallbackNote || 'Using hardcoded data';
+                
+                // Show info message
+                showInfo(fallbackNote || 'API limit reached. Using hardcoded responses.');
+            } else {
+                badge.textContent = 'AI POWERED';
+                badge.style.background = 'linear-gradient(135deg, #D4A574 0%, #C89968 100%)';
+                badge.title = 'Real-time AI response';
+                hideInfo();
+            }
+
+            showResponse();
+        }
+
+        function parseStructuredResponse(text) {
+            const result = {};
+            
+            // Extract sections using regex
+            const impliedMatch = text.match(/### 💬 Implied Meaning\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+            const toneMatch = text.match(/### 🏷️ Tone Category\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+            const usageMatch = text.match(/### 📍 Usage Context\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+            const socialMatch = text.match(/### 🤝 Social Appropriateness\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+            const risksMatch = text.match(/### ⚠️ Risks \/ Cultural Notes\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+            const explanationMatch = text.match(/### 📖 Cultural Explanation\s*>\s*(.+?)(?=\n\*\*|$)/s);
+
+            result.impliedMeaning = impliedMatch ? impliedMatch[1].trim() : '';
+            result.toneCategory = toneMatch ? toneMatch[1].trim() : '';
+            result.usageContext = usageMatch ? usageMatch[1].trim() : '';
+            result.socialAppropriateness = socialMatch ? socialMatch[1].trim() : '';
+            result.culturalNotes = risksMatch ? risksMatch[1].trim() : '';
+            result.culturalExplanation = explanationMatch ? explanationMatch[1].trim() : '';
+
+            return result;
+        }
+
+        function showLoading() {
+            const loadingContainer = document.getElementById('loadingContainer');
+            loadingContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p class="loading-text">Analyzing cultural context...</p>
+                </div>
+            `;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').innerHTML = '';
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `<div class="error-message">❌ ${message}</div>`;
+        }
+
+        function hideError() {
+            document.getElementById('errorContainer').innerHTML = '';
+        }
+
+        function showInfo(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `
+                <div style="background: rgba(251, 191, 36, 0.2); backdrop-filter: blur(10px); border: 2px solid rgba(251, 191, 36, 0.5); border-radius: 16px; padding: 20px; color: white; font-weight: 500; margin-top: 20px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);">
+                    ℹ️ ${message}
+                </div>
+            `;
+        }
+
+        function hideInfo() {
+            // Info uses the same container as error
+            document.getElementById('errorContainer').innerHTML = '';
+        }
+
+        function showResponse() {
+            document.getElementById('responseCard').classList.add('active');
+        }
+
+        function hideResponse() {
+            document.getElementById('responseCard').classList.remove('active');
+        }
+
+        function useSuggestion(phrase) {
+            document.getElementById('phraseInput').value = phrase;
+            interpretPhrase();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                interpretPhrase();
+            }
+        }
+
+        // Focus on input when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('phraseInput').focus();
+        });
+    </script>
+</body>
+</html>

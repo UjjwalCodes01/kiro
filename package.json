@@ -4,8 +4,8 @@
   "description": "NCR Local Guide Bot - Powered by Kiro AI",
   "main": "src/server.js",
   "scripts": {
-    "dev": "node src/server.js",
-    "start": "node src/server.js",
+    "dev": "next dev",
+    "start": "next start",
     "build": "next build",
     "lint": "eslint"
   },

@@ -26,13 +26,13 @@ class AIService {
     this.steeringGuidelines = null;
     this.apiKey = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY || process.env.GEMINI_API_KEY;
     this.provider = process.env.AI_PROVIDER || 'openai'; // 'openai', 'anthropic', or 'gemini'
-    
+
     // Initialize AI clients
     if (this.provider === 'gemini' && this.apiKey) {
       this.genAI = new GoogleGenAI({});
       process.env.GEMINI_API_KEY = this.apiKey; // Set the environment variable for the SDK
     }
-    
+
     this.loadContext();
   }
 
@@ -44,11 +44,11 @@ class AIService {
       // Load product context
       const productPath = path.join(__dirname, '../.kiro/product.md');
       this.productContext = fs.readFileSync(productPath, 'utf-8');
-      
+
       // Load steering guidelines
       const steeringPath = path.join(__dirname, '../.kiro/steering/ncr-guide-behavior.md');
       this.steeringGuidelines = fs.readFileSync(steeringPath, 'utf-8');
-      
+
       console.log('✅ AI Service: Loaded context and steering guidelines');
     } catch (error) {
       console.error('❌ AI Service: Failed to load context:', error.message);
@@ -61,7 +61,7 @@ class AIService {
    */
   async generateWithOpenAI(query) {
     const systemPrompt = this.buildSystemPrompt();
-    
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -86,6 +86,17 @@ class AIService {
     });
 
     if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+
+      // Check for quota/limit errors
+      if (response.status === 429 ||
+        errorData.error?.code === 'insufficient_quota' ||
+        errorData.error?.type === 'insufficient_quota' ||
+        errorData.error?.message?.includes('quota') ||
+        errorData.error?.message?.includes('limit')) {
+        throw new Error('API_LIMIT_EXCEEDED');
+      }
+
       throw new Error(`OpenAI API error: ${response.statusText}`);
     }
 
@@ -103,7 +114,7 @@ class AIService {
    */
   async generateWithAnthropic(query) {
     const systemPrompt = this.buildSystemPrompt();
-    
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -125,6 +136,16 @@ class AIService {
     });
 
     if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+
+      // Check for quota/limit errors
+      if (response.status === 429 ||
+        errorData.error?.type === 'rate_limit_error' ||
+        errorData.error?.message?.includes('quota') ||
+        errorData.error?.message?.includes('limit')) {
+        throw new Error('API_LIMIT_EXCEEDED');
+      }
+
       throw new Error(`Anthropic API error: ${response.statusText}`);
     }
 
@@ -147,7 +168,7 @@ class AIService {
         model: 'gemini-2.5-flash',
         contents: `${systemPrompt}\n\nUser Query: ${query}`
       });
-      
+
       return {
         text: response.text,
         model: 'gemini-2.5-flash',
@@ -184,7 +205,36 @@ ${this.steeringGuidelines}
 6. Keep responses practical and actionable
 7. If the query is not about NCR, politely redirect
 
-# RESPONSE FORMAT:
+# SPECIAL RESPONSE FORMAT FOR CULTURAL/SLANG QUERIES:
+If the user is asking about NCR slang, cultural terms, or asking "what does X mean?" or "who are Y?", provide a structured response in this exact format:
+
+## 🟣 Cultural Interpretation
+
+**Original Phrase:** "[exact phrase]"
+
+### 💬 Implied Meaning
+> [Brief explanation of what it means]
+
+### 🏷️ Tone Category
+> [Respectful/Casual/Formal/etc.]
+
+### 📍 Usage Context
+> [When and where it's used, social situations]
+
+### 🤝 Social Appropriateness
+> [Who can use it, appropriate contexts]
+
+### ⚠️ Risks / Cultural Notes
+> [Potential misunderstandings, cultural significance]
+
+### 📖 Cultural Explanation
+> [Detailed cultural context, history, significance in NCR]
+
+**Powered by Kiro Knowledge Base × [AI Provider]**  
+_Using [.kiro/product.md](.kiro/product.md) for cultural context_
+
+# STANDARD RESPONSE FORMAT:
+For all other queries (food, traffic, general advice):
 - Start with a friendly greeting or acknowledgment
 - Provide specific, actionable information
 - Include prices, locations, and timings when relevant
@@ -200,9 +250,9 @@ Now respond to the user's query using this context and guidelines.`;
   async generateResponse(query) {
     try {
       console.log(`🤖 AI Service: Generating response for: "${query}"`);
-      
+
       let result;
-      
+
       if (this.provider === 'anthropic') {
         result = await this.generateWithAnthropic(query);
       } else if (this.provider === 'gemini') {
@@ -210,9 +260,9 @@ Now respond to the user's query using this context and guidelines.`;
       } else {
         result = await this.generateWithOpenAI(query);
       }
-      
+
       console.log(`✅ AI Service: Response generated using ${result.provider}`);
-      
+
       return {
         response: result.text,
         metadata: {
@@ -224,7 +274,7 @@ Now respond to the user's query using this context and guidelines.`;
           usage: result.usage
         }
       };
-      
+
     } catch (error) {
       console.error('❌ AI Service: Error generating response:', error.message);
       throw error;
