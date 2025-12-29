@@ -93,6 +93,24 @@ export default function CulturalInterpreter() {
     result.culturalNotes = risksMatch ? risksMatch[1].trim() : '';
     result.culturalExplanation = explanationMatch ? explanationMatch[1].trim() : '';
 
+    // If this looks like a general guide response (no cultural interpretation fields found),
+    // parse it as a general response
+    if (!result.impliedMeaning && !result.toneCategory && !result.usageContext) {
+      const answerMatch = text.match(/### 💬 Answer\s*\n\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+      const detailsMatch = text.match(/### 📍 Details & Locations\s*\n\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+      const tipsMatch = text.match(/### 🤝 Tips & Recommendations\s*\n\s*>\s*(.+?)(?=\n###|\n\*\*|$)/s);
+      const notesMatch = text.match(/### ⚠️ Important Notes\s*\n\s*>\s*(.+?)(?=\n\*\*|$)/s);
+
+      if (answerMatch) {
+        result.impliedMeaning = answerMatch[1].trim();
+        result.toneCategory = 'Friendly and Informative';
+        result.usageContext = detailsMatch ? detailsMatch[1].trim() : 'General conversation';
+        result.socialAppropriateness = 'Highly appropriate for all contexts';
+        result.culturalNotes = notesMatch ? notesMatch[1].trim() : 'NCR guide response';
+        result.culturalExplanation = tipsMatch ? tipsMatch[1].trim() : 'General guidance for NCR visitors';
+      }
+    }
+
     // If any field is empty, try to fill it with fallback data
     const fallback = getFallbackData(phraseText);
     if (fallback) {

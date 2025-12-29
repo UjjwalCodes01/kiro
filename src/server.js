@@ -226,6 +226,7 @@ function generateContextAwareResponse(query) {
   const lowerQuery = query.toLowerCase();
 
   const categories = [
+    { keywords: ['hello', 'hi', 'hey', 'namaste', 'greetings', 'good morning', 'good afternoon', 'good evening'], generator: generateGreetingResponse },
     { keywords: ['jugaad', 'scene', 'slang', 'bhaiya', 'chappal', 'mast', 'abhi thoda kaam', 'abhi kaam', 'chaliye ji', 'chaliye', 'dekhte hain', 'dekhte hai', 'aap ka keeht', 'keeht hua'], generator: generateSlangResponse },
     { keywords: ['momo', 'chaat', 'paratha', 'khana', 'food', 'eating', 'restaurant', 'butter chicken', 'dosa'], generator: generateFoodResponse },
     { keywords: ['traffic', 'noida', 'ghaziabad', 'commute', 'nh-24', 'travel', 'hours', 'time'], generator: generateTrafficResponse },
@@ -236,6 +237,49 @@ function generateContextAwareResponse(query) {
 
   const category = categories.find(cat => cat.keywords.some(kw => lowerQuery.includes(kw)));
   return category ? category.generator(query) : generateDefaultResponse(query);
+}
+
+/**
+ * Generate greeting responses
+ */
+function generateGreetingResponse(query) {
+  const lowerQuery = query.toLowerCase();
+  
+  if (lowerQuery.includes('namaste')) {
+    return `## 🟣 NCR Local Guide Bot
+
+**Namaste! 🙏**
+
+Welcome to NCR (National Capital Region)! I'm your local guide for all things Delhi-NCR - from jugaad culture to the best momos in town.
+
+**What can I help you with today?**
+- 🥟 Local food recommendations (momos, chaat, paratha)
+- 🚗 Traffic and commute tips
+- 🎭 Cultural insights and slang
+- 🎪 Events and weekend plans
+- 💡 Travel tips for visitors
+
+Just ask about anything NCR-related! Main Delhi, Noida, Ghaziabad, Gurgaon - sab kuch jaanta hoon! 😄
+
+**Powered by Kiro Knowledge Base × NCR Expertise**`;
+  }
+  
+  return `## 🟣 NCR Local Guide Bot
+
+**Hello! 👋**
+
+Welcome to NCR (National Capital Region)! I'm your friendly local guide for Delhi-NCR culture, food, traffic, and everything in between.
+
+**I can help you with:**
+- 🥟 Best local food spots and recommendations
+- 🚗 Traffic conditions and commute advice  
+- 🎭 Cultural slang and traditions
+- 🎪 Weekend events and entertainment
+- 💡 Safety tips and local insights
+
+Ask me about momos, jugaad, traffic in Noida, festivals, or anything NCR-related! Main sab kuch bataunga! 😊
+
+**Powered by Kiro Knowledge Base × NCR Expertise**`;
 }
 
 /**

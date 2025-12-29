@@ -234,6 +234,11 @@ Now respond to the user's query using this context and guidelines.`;
 function generateContextAwareResponse(query: string): string {
   const lowerQuery = query.toLowerCase();
 
+  // Greeting queries
+  if (lowerQuery.includes('hello') || lowerQuery.includes('hi') || lowerQuery.includes('hey') || lowerQuery.includes('namaste') || lowerQuery.includes('greetings')) {
+    return generateGreetingResponse(query);
+  }
+
   // Cultural/Slang queries
   if (lowerQuery.includes('jugaad') || lowerQuery.includes('bhaiya') || lowerQuery.includes('scene')) {
     return generateSlangResponse(query);
@@ -341,6 +346,84 @@ _Using [.kiro/product.md](.kiro/product.md) for NCR insights_`;
 > Traffic can be crazy, so plan extra time
 > Water bottle carry karo, heat mein dehydrate ho jate ho
 > Respect local culture aur traditions
+
+**Powered by Kiro Knowledge Base × Template Fallback**
+_Using [.kiro/product.md](.kiro/product.md) for NCR insights_`;
+}
+
+function generateGreetingResponse(query: string): string {
+  const lowerQuery = query.toLowerCase();
+
+  if (lowerQuery.includes('namaste')) {
+    return `## 🟣 Kiro's Guide
+
+**Query Summary:** "${query}"
+
+### 💬 Answer
+> Namaste! 🙏 Welcome to NCR (National Capital Region)! I'm Kiro, your friendly local guide for Delhi-NCR culture, food, traffic, and everything in between.
+
+### 📍 What I Can Help With
+> Delhi: Historic sites, street food, local culture
+> Noida: Tech hubs, shopping, weekend spots
+> Ghaziabad: Markets, momos, local lifestyle
+> Gurgaon: Corporate areas, malls, nightlife
+
+### 💰 Cost Information
+> Street food: ₹50-200 per meal
+> Local transport: ₹20-100 per trip
+> Entertainment: ₹500-2000 per outing
+
+### ⏰ Best Times
+> Morning: 9 AM - 12 PM (less traffic)
+> Evening: 6 PM - 9 PM (food & culture)
+> Weekend: Full day exploration
+
+### 🤝 Tips & Recommendations
+> Ask about momos, jugaad, traffic, festivals
+> I know local slang, hidden gems, and pro tips
+> Friendly and approachable - just like NCR people!
+
+### ⚠️ Important Notes
+> Traffic can be unpredictable - plan extra time
+> Respect local culture and traditions
+> Stay hydrated, especially in summer
+
+**Powered by Kiro Knowledge Base × Template Fallback**
+_Using [.kiro/product.md](.kiro/product.md) for NCR insights_`;
+  }
+
+  return `## 🟣 Kiro's Guide
+
+**Query Summary:** "${query}"
+
+### 💬 Answer
+> Hello! 👋 Welcome to NCR (National Capital Region)! I'm Kiro, your friendly local guide for Delhi-NCR culture, food, traffic, and everything in between.
+
+### 📍 What I Can Help With
+> Delhi: Historic sites, street food, local culture
+> Noida: Tech hubs, shopping, weekend spots
+> Ghaziabad: Markets, momos, local lifestyle
+> Gurgaon: Corporate areas, malls, nightlife
+
+### 💰 Cost Information
+> Street food: ₹50-200 per meal
+> Local transport: ₹20-100 per trip
+> Entertainment: ₹500-2000 per outing
+
+### ⏰ Best Times
+> Morning: 9 AM - 12 PM (less traffic)
+> Evening: 6 PM - 9 PM (food & culture)
+> Weekend: Full day exploration
+
+### 🤝 Tips & Recommendations
+> Ask about momos, jugaad, traffic, festivals
+> I know local slang, hidden gems, and pro tips
+> Friendly and approachable - just like NCR people!
+
+### ⚠️ Important Notes
+> Traffic can be unpredictable - plan extra time
+> Respect local culture and traditions
+> Stay hydrated, especially in summer
 
 **Powered by Kiro Knowledge Base × Template Fallback**
 _Using [.kiro/product.md](.kiro/product.md) for NCR insights_`;
